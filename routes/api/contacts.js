@@ -1,44 +1,21 @@
 const { contactValidation } = require('../../middlewares/validationMiddleware');
-
 const express = require('express');
-
 const router = express.Router();
+const { asyncWrapper } = require('../../helpers/apiHelpers');
+const {
+  getContactsController,
+  getContactByIdController,
+  postContactController,
+  changeContactByIdController,
+  patchContactFavoriteByIdController,
+  deleteContactByIdController,
+} = require('../../controllers/contactController');
 
-router.get('/', async (req, res, next) => {
-  // res.json(await listContacts());
-});
+router.get('/', asyncWrapper(getContactsController));
+router.get('/:id', asyncWrapper(getContactByIdController));
+router.post('/', contactValidation, asyncWrapper(postContactController));
+router.put('/:id', contactValidation, asyncWrapper(changeContactByIdController));
+router.patch('/:id/favorite', contactValidation, asyncWrapper(patchContactFavoriteByIdController));
+router.delete('/:id', asyncWrapper(deleteContactByIdController));
 
-router.get('/:contactId', async (req, res, next) => {
-  // const { contactId } = req.params;
-  // const result = await getContactById(contactId);
-  // if (result.length === 0) {
-  //   return res.status(404).json({ message: `Not found` });
-  // }
-  // res.json(await getContactById(contactId));
-});
-
-router.post('/', contactValidation, async (req, res, next) => {
-  // const body = req.body;
-  // res.json(await addContact(body));
-});
-
-router.delete('/:contactId', async (req, res, next) => {
-  // const { contactId } = req.params;
-  // const result = await removeContact(contactId);
-  // if (result === false) {
-  //   return res.status(400).json({ message: `Contact id ${contactId} not found` });
-  // }
-  // res.json({ message: 'contact deleted' });
-});
-
-router.put('/:contactId', contactValidation, async (req, res, next) => {
-  // const { contactId } = req.params;
-  // const body = req.body;
-  // const result = await updateContact(contactId, body);
-  // if (result === null) {
-  //   return res.status(400).json({ message: `Contact id ${contactId} not found` });
-  // }
-  // res.json(result);
-});
-
-module.exports = router;
+module.exports = { contactsRouter: router };

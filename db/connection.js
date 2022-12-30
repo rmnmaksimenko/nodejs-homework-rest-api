@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
-ConnectToMongo().catch(err => console.log(err));
+ConnectToMongo().catch(err => {
+  console.log('Database connection error');
+  console.log(err);
+  process.exit(1);
+});
 
 async function ConnectToMongo() {
   await mongoose.connect(process.env.MONGO_URL);
