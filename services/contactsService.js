@@ -17,28 +17,22 @@ const addContact = async ({ name, email, phone, favorite }) => {
   await contact.save();
 };
 const changeContactById = async (id, { name, email, phone, favorite }) => {
-  const contact = await Contact.findById(id);
+  const contact = await Contact.findByIdAndUpdate(id, { $set: { name, email, phone, favorite } });
   if (!contact) {
     throw new WrongParametersError(`Contact id ${id} not found`);
   }
-  await Contact.findByIdAndUpdate(id, { $set: { name, email, phone, favorite } });
 };
 const patchContactFavoriteById = async (id, { favorite }) => {
-  const contact = await Contact.findById(id);
+  const contact = await Contact.findByIdAndUpdate(id, { $set: { favorite } });
   if (!contact) {
     throw new WrongParametersError(`Contact id ${id} not found`);
   }
-  if (typeof favorite !== 'boolean') {
-    throw new WrongParametersError('missing field favorite');
-  }
-  await Contact.findByIdAndUpdate(id, { $set: { favorite } });
 };
 const deleteContactById = async id => {
-  const contact = await Contact.findById(id);
+  const contact = await Contact.findByIdAndRemove(id);
   if (!contact) {
     throw new WrongParametersError(`Contact id ${id} not found`);
   }
-  await Contact.findByIdAndRemove(id);
 };
 
 module.exports = {
