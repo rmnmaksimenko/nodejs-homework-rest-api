@@ -8,6 +8,7 @@ const contactValidation = (req, res, next) => {
       .regex(/^[0-9]{10}$/)
       .messages({ 'string.pattern.base': `Phone number must have 10 digits.` })
       .required(),
+    favorite: Joi.boolean(),
   });
 
   const validationResult = schema.validate(req.body);
