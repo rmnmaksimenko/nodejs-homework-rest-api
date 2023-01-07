@@ -47,4 +47,16 @@ const favoriteValidation = (req, res, next) => {
   next();
 };
 
-module.exports = { contactValidation, updateValidation, favoriteValidation };
+const subscriptionValidation = (req, res, next) => {
+  const schema = Joi.object({
+    subscription: Joi.string().required().valid('starter', 'pro', 'business'),
+  });
+
+  const validationResult = schema.validate(req.body);
+  if (validationResult.error) {
+    return res.status(400).json({ status: validationResult.error.details });
+  }
+  next();
+};
+
+module.exports = { contactValidation, updateValidation, favoriteValidation, subscriptionValidation };

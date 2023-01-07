@@ -1,18 +1,42 @@
-class ValidationError extends Error {
+class CommonError extends Error {
   constructor(message) {
     super(message);
     this.status = 400;
   }
 }
 
-class WrongParametersError extends Error {
+class ValidationError extends CommonError {
   constructor(message) {
     super(message);
     this.status = 400;
+  }
+}
+
+class WrongParametersError extends CommonError {
+  constructor(message) {
+    super(message);
+    this.status = 400;
+  }
+}
+
+class NotAuthorizedError extends CommonError {
+  constructor(message) {
+    super(message);
+    this.status = 401;
+  }
+}
+
+class EmailInUseError extends CommonError {
+  constructor(message) {
+    super(message);
+    this.status = 409;
   }
 }
 
 module.exports = {
+  CommonError,
   ValidationError,
   WrongParametersError,
+  NotAuthorizedError,
+  EmailInUseError,
 };
