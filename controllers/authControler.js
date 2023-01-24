@@ -1,9 +1,14 @@
 const { User } = require('../db/userModel');
 const { registration, login, subscriptionUpdate } = require('../services/authService');
+const gravatar = require('gravatar');
+var Jimp = require('jimp');
+const fs = require('fs').promises;
+const path = require('path');
 
 const registrationController = async (req, res) => {
   const { email, password, subscription = 'starter' } = req.body;
-  await registration(email, password, subscription);
+  const avatarURL = gravatar.url(email);
+  await registration(email, password, subscription, avatarURL);
   res.status(201).json({ email, subscription });
 };
 
@@ -32,10 +37,33 @@ const subscriptionUpdateController = async (req, res) => {
   res.json(`Subscription update from ${oldSub} to ${newSub}`);
 };
 
+const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tempUpload, filename } = req.file;
+  await Jimp.read(tempUpload)
+    .then(picture => {
+      return picture.resize(250, 250).write(tempUpload);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+  const newFileName = `${_id}_${filename}`;
+  const resultUpload = path.join(avatarsDir, newFileName);
+  await fs.rename(tempUpload, resultUpload);
+
+  const avatarURL = path.join('avatars', newFileName);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({
+    avatarURL,
+  });
+};
 module.exports = {
   registrationController,
   loginController,
   logoutController,
   GetCurrentUserController,
   subscriptionUpdateController,
+  updateAvatar,
 };
