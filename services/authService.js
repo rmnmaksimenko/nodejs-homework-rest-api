@@ -3,8 +3,8 @@ var jwt = require('jsonwebtoken');
 const { User } = require('../db/userModel');
 const { NotAuthorizedError, EmailInUseError } = require('../helpers/errors');
 
-const registration = async (email, password, subscription) => {
-  const user = new User({ email, password, subscription });
+const registration = async (email, password, subscription, avatarURL) => {
+  const user = new User({ email, password, subscription, avatarURL });
   try {
     await user.save();
   } catch (error) {
