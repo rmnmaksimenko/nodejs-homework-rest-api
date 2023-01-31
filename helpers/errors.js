@@ -33,10 +33,18 @@ class EmailInUseError extends CommonError {
   }
 }
 
+class UserNotFoundError extends CommonError {
+  constructor(message) {
+    super(message);
+    this.status = 404;
+  }
+}
+
 module.exports = {
   CommonError,
   ValidationError,
   WrongParametersError,
   NotAuthorizedError,
   EmailInUseError,
+  UserNotFoundError,
 };
