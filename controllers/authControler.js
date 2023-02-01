@@ -1,15 +1,29 @@
 const { User } = require('../db/userModel');
-const { registration, login, subscriptionUpdate } = require('../services/authService');
+const { registration, login, subscriptionUpdate, verify, verifyResend } = require('../services/authService');
 const gravatar = require('gravatar');
 var Jimp = require('jimp');
 const fs = require('fs').promises;
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 const registrationController = async (req, res) => {
   const { email, password, subscription = 'starter' } = req.body;
   const avatarURL = gravatar.url(email);
-  await registration(email, password, subscription, avatarURL);
+  const verificationCode = uuidv4();
+  await registration(email, password, subscription, avatarURL, verificationCode);
   res.status(201).json({ email, subscription });
+};
+
+const verifyController = async (req, res) => {
+  const { verificationToken } = req.params;
+  await verify(verificationToken);
+  res.json({ message: 'Verify success' });
+};
+
+const verifyResendController = async (req, res) => {
+  const { email } = req.body;
+  await verifyResend(email);
+  res.json({ message: 'Verification email sent' });
 };
 
 const loginController = async (req, res) => {
@@ -61,6 +75,8 @@ const updateAvatar = async (req, res) => {
 };
 module.exports = {
   registrationController,
+  verifyController,
+  verifyResendController,
   loginController,
   logoutController,
   GetCurrentUserController,

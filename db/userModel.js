@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema(
     subscription: { type: String, enum: ['starter', 'pro', 'business'], default: 'starter' },
     token: { type: String, default: null },
     avatarURL: { type: String, required: true },
+    verify: { type: Boolean, default: false },
+    verificationToken: { type: String, required: [true, 'Verify token is required'] },
   },
   { timestamps: true }
 );
